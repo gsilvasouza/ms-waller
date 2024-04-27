@@ -12,7 +12,7 @@ type Transaction struct {
 	AccountFrom *Account
 	AccountTo   *Account
 	Amount      float64
-	CreatedAt   time.Time
+	EventDate   time.Time
 }
 
 func NewTransaction(accountFrom *Account, accountTo *Account, amount float64) (*Transaction, error) {
@@ -21,7 +21,7 @@ func NewTransaction(accountFrom *Account, accountTo *Account, amount float64) (*
 		AccountFrom: accountFrom,
 		AccountTo:   accountTo,
 		Amount:      amount,
-		CreatedAt:   time.Now(),
+		EventDate:   time.Now(),
 	}
 	err := transaction.Validate()
 	if err != nil {
