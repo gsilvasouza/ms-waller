@@ -1,4 +1,4 @@
-package createclient
+package create_client
 
 import (
 	"testing"
@@ -22,20 +22,20 @@ func (m *ClientGatewayMock) Get(id string) (*entity.Client, error) {
 	return args.Get(0).(*entity.Client), args.Error(1)
 }
 
-func TestCreateClientUseCase(t *testing.T) {
-	clientGatewayMock := &ClientGatewayMock{}
-	clientGatewayMock.On("Save", mock.Anything).Return(nil)
-	uc := NewCreateClientUseCase(clientGatewayMock)
+func TestCreateClientUseCase_Execute(t *testing.T) {
+	m := &ClientGatewayMock{}
+	m.On("Save", mock.Anything).Return(nil)
+	uc := NewCreateClientUseCase(m)
 
 	output, err := uc.Execute(CreateClientInputDTO{
-		Name:  "John",
-		Email: "h0f7P@example.com",
+		Name:  "John Doe",
+		Email: "j@j",
 	})
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
 	assert.NotEmpty(t, output.ID)
-	assert.Equal(t, "h0f7P@example.com", output.Email)
-	assert.Equal(t, "John", output.Name)
-	clientGatewayMock.AssertExpectations(t)
-	clientGatewayMock.AssertNumberOfCalls(t, "Save", 1)
+	assert.Equal(t, "John Doe", output.Name)
+	assert.Equal(t, "j@j", output.Email)
+	m.AssertExpectations(t)
+	m.AssertNumberOfCalls(t, "Save", 1)
 }

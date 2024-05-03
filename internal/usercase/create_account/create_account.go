@@ -1,12 +1,14 @@
-package createaccount
+package create_account
 
 import (
+	"fmt"
+
 	"github.com/gsilvasouza/ms-waller/internal/entity"
 	"github.com/gsilvasouza/ms-waller/internal/gateway"
 )
 
 type CreateAccountInputDTO struct {
-	ClientID string
+	ClientID string `json:"client_id"`
 }
 
 type CreateAccountOutputDTO struct {
@@ -25,11 +27,13 @@ func NewCreateAccountUseCase(clientGateway gateway.ClientGateway, accountGateway
 	}
 }
 
-func (uc *CreateAccountUseCase) Execute(input *CreateAccountInputDTO) (*CreateAccountOutputDTO, error) {
+func (uc *CreateAccountUseCase) Execute(input CreateAccountInputDTO) (*CreateAccountOutputDTO, error) {
+	fmt.Println(input.ClientID)
 	client, err := uc.ClientGateway.Get(input.ClientID)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(client)
 	account := entity.NewAccount(client)
 	err = uc.AccountGateway.Save(account)
 	if err != nil {
