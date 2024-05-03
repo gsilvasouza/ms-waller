@@ -36,29 +36,30 @@ func (m *AccountGatewayMock) FindByID(id string) (*entity.Account, error) {
 }
 
 func TestCreateTransactionUseCase_Execute(t *testing.T) {
-	client1, _ := entity.NewClient("John", "h0f7P@example.com")
+	client1, _ := entity.NewClient("client1", "j@j.com")
 	account1 := entity.NewAccount(client1)
 	account1.Credit(1000)
 
-	client2, _ := entity.NewClient("Jane", "h0f7P@example.com")
+	client2, _ := entity.NewClient("client2", "j@j2.com")
 	account2 := entity.NewAccount(client2)
 	account2.Credit(1000)
 
 	mockUow := &mocks.UowMock{}
 	mockUow.On("Do", mock.Anything, mock.Anything).Return(nil)
 
-	inputDto := &CreateTransactionInputDTO{
+	inputDto := CreateTransactionInputDTO{
 		AccountIDFrom: account1.ID,
 		AccountIDTo:   account2.ID,
 		Amount:        100,
 	}
 
 	dispatcher := events.NewEventDispatcher()
-	event := event.NewTransactionCreated()
+	eventTransaction := event.NewTransactionCreated()
+	eventBalance := event.NewBalanceUpdated()
 	ctx := context.Background()
 
-	uc := NewCreateTransactionUseCase(mockUow, dispatcher, event)
-	output, err := uc.Execute(ctx, *inputDto)
+	uc := NewCreateTransactionUseCase(mockUow, dispatcher, eventTransaction, eventBalance)
+	output, err := uc.Execute(ctx, inputDto)
 	assert.Nil(t, err)
 	assert.NotNil(t, output)
 	mockUow.AssertExpectations(t)
